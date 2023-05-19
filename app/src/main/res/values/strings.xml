@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">ML Kit Sample</string>
+
+    <string name="label_language_identification">Language Identification</string>
+    <string name="label_translation">Translation</string>
+    <string name="label_entity_extraction">Entity Extraction</string>
+    <string name="label_smart_reply">Smart Reply</string>
+    <string name="label_select_language">Select Language</string>
+    <string name="label_select_original_language">Select Original Language</string>
+    <string name="label_select_target_language">Select Target Language</string>
+
+    <string name="label_confirm_close">Confirm Close</string>
+    <string name="label_info_confirm_close_translate_language">A language model is currently being downloaded/deleted. Are you sure you want to close the dialog?</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_no">No</string>
+    <string name="label_reply">Reply</string>
+
+    <string name="label_downloaded_languages">Downloaded Languages</string>
+    <string name="label_no_downloaded_languages">No Downloaded Language</string>
+    <string name="label_available_languages">Available Languages</string>
+
+    <string name="label_participant_value">Participant: </string>
+    <string name="label_clear_chat">Clear Chat</string>
+
+    <string name="placeholder_enter_text">Enter text</string>
+</resources>

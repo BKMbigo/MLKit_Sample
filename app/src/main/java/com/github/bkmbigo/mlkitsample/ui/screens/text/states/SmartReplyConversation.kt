@@ -1,0 +1,22 @@
+package com.github.bkmbigo.mlkitsample.ui.screens.text.states
+
+import com.google.mlkit.nl.smartreply.TextMessage
+import kotlinx.datetime.Instant
+
+data class SmartReplyConversation(
+    val participant: SmartReplyParticipant,
+    val text: String,
+    val time: Long
+) {
+    fun toTextMessage() = when(participant){
+        SmartReplyParticipant.LOCAL_USER -> TextMessage.createForLocalUser(
+            text,
+            time
+        )
+        SmartReplyParticipant.REMOTE_USER -> TextMessage.createForRemoteUser(
+            text,
+            time,
+            "User 1"
+        )
+    }
+}

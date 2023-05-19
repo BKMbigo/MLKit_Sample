@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_english">🏴󠁧󠁢󠁥󠁮󠁧󠁿 English</string>
+    <string name="language_french">🇫🇷 French</string>
+    <string name="language_spanish">🇪🇸 Spanish</string>
+    <string name="language_german">🇩🇪 German</string>
+    <string name="language_swahili">🇹🇿 Swahili</string>
+    <string name="language_chinese">🇨🇳 Chinese</string>
+    <string name="language_japanese">🇯🇵 Japanese</string>
+    <string name="language_dutch">🇳🇱 Dutch</string>
+    <string name="language_zulu">🇿🇦 Zulu</string>
+    <string name="language_portuguese">🇵🇹 Portuguese</string>
+    <string name="language_hindi">🇮🇳 Hindi</string>
+
+    <string name="language_unidentified">Unidentified Language</string>
+    <string name="language_new_language">New Language: %s </string>
+
+</resources>
