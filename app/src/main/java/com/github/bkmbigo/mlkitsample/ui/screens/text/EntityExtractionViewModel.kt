@@ -1,11 +1,10 @@
 package com.github.bkmbigo.mlkitsample.ui.screens.text
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityRecordState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -37,11 +36,7 @@ class EntityExtractionViewModel: ViewModel() {
                     .getDownloadedModels(EntityExtractionRemoteModel::class.java)
                     .await()
                     .mapNotNull {
-                        try {
-                            LanguageView.getEntityLanguageView(it)
-                        } catch (e: Exception) {
-                            null
-                        }
+                        EntityExtractionLanguage.getEntityExtractionLanguage(it.modelIdentifier)
                     }
                     .toPersistentList()
 
@@ -50,15 +45,15 @@ class EntityExtractionViewModel: ViewModel() {
             } catch (_: Exception) { }
         }
     }
-    fun downloadLanguage(languageView: LanguageView) {
+    fun downloadLanguage(language: EntityExtractionLanguage) {
         viewModelScope.launch {
             val model = EntityExtractionRemoteModel
-                .Builder(languageView.getEntityExtractionLanguage())
+                .Builder(language.entityExtractionOption)
                 .build()
 
             _state.value = state.value.copy(
-                downloadingLanguages = state.value.downloadingLanguages.add(languageView),
-                errorLanguages = state.value.errorLanguages.remove(languageView)
+                downloadingLanguages = state.value.downloadingLanguages.add(language),
+                errorLanguages = state.value.errorLanguages.remove(language)
             )
 
             try {
@@ -68,31 +63,29 @@ class EntityExtractionViewModel: ViewModel() {
                     .getDownloadedModels(EntityExtractionRemoteModel::class.java)
                     .await()
                     .mapNotNull {
-                        try {
-                            LanguageView.getEntityLanguageView(it)
-                        } catch(e: Exception) { null }
+                        EntityExtractionLanguage.getEntityExtractionLanguage(it.modelIdentifier)
                     }
                     .toPersistentList()
 
                 _state.value = state.value.copy(
                     downloadedLanguages = downloadedLanguages,
-                    downloadingLanguages = state.value.downloadingLanguages.remove(languageView)
+                    downloadingLanguages = state.value.downloadingLanguages.remove(language)
                 )
             } catch (e: Exception) {
                 _state.value = state.value.copy(
-                    downloadingLanguages = state.value.downloadingLanguages.remove(languageView),
-                    errorLanguages = state.value.errorLanguages.add(languageView)
+                    downloadingLanguages = state.value.downloadingLanguages.remove(language),
+                    errorLanguages = state.value.errorLanguages.add(language)
                 )
             }
         }
     }
 
-    fun deleteLanguage(languageView: LanguageView) {
+    fun deleteLanguage(language: EntityExtractionLanguage) {
         viewModelScope.launch {
-            val model = EntityExtractionRemoteModel.Builder(languageView.getEntityExtractionLanguage()).build()
+            val model = EntityExtractionRemoteModel.Builder(language.entityExtractionOption).build()
             _state.value = state.value.copy(
-                deletingLanguages = state.value.deletingLanguages.add(languageView),
-                errorLanguages = state.value.errorLanguages.remove(languageView)
+                deletingLanguages = state.value.deletingLanguages.add(language),
+                errorLanguages = state.value.errorLanguages.remove(language)
             )
             try {
                 modelManager.deleteDownloadedModel(model).await()
@@ -100,26 +93,24 @@ class EntityExtractionViewModel: ViewModel() {
                     .getDownloadedModels(EntityExtractionRemoteModel::class.java)
                     .await()
                     .mapNotNull {
-                        try {
-                            LanguageView.getEntityLanguageView(it)
-                        } catch(e: Exception) { null }
+                            EntityExtractionLanguage.getEntityExtractionLanguage(it.modelIdentifier)
                     }
                     .toPersistentList()
 
                 _state.value = state.value.copy(
                     downloadedLanguages = downloadedLanguages.toPersistentList(),
-                    deletingLanguages = state.value.deletingLanguages.remove(languageView)
+                    deletingLanguages = state.value.deletingLanguages.remove(language)
                 )
             } catch (e: MlKitException) {
                 _state.value = state.value.copy(
-                    deletingLanguages = state.value.deletingLanguages.remove(languageView),
-                    errorLanguages = state.value.errorLanguages.add(languageView)
+                    deletingLanguages = state.value.deletingLanguages.remove(language),
+                    errorLanguages = state.value.errorLanguages.add(language)
                 )
             }
         }
     }
 
-    fun updateLanguage(languageView: LanguageView) {
+    fun updateLanguage(language: EntityExtractionLanguage) {
         currentEntityExtractor?.let {
             it.close()
         }
@@ -128,7 +119,7 @@ class EntityExtractionViewModel: ViewModel() {
 
         val newEntityExtractor = EntityExtraction.getClient(
             EntityExtractorOptions
-                .Builder(LanguageView.getEntityExtractionLanguage(languageView))
+                .Builder(language.entityExtractionOption)
                 .build()
         )
 
@@ -142,14 +133,14 @@ class EntityExtractionViewModel: ViewModel() {
             } else {
                 currentEntityExtractor = newEntityExtractor
                 _state.value = state.value.copy(
-                    currentLanguage = languageView,
+                    currentLanguage = language,
                     loadingLanguage = false
                 )
             }
         }
     }
 
-    fun extractEntities(languageView: LanguageView, text: String) {
+    fun extractEntities(language: EntityExtractionLanguage, text: String) {
         viewModelScope.launch {
             currentEntityExtractor?.let { entityExtractor ->
 
@@ -162,7 +153,7 @@ class EntityExtractionViewModel: ViewModel() {
                 _state.value = state.value.copy(
                     records = state.value.records.add(
                         EntityRecordState(
-                            languageView,
+                            language,
                             false,
                             text,
                             results.toPersistentList()

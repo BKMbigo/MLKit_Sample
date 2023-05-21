@@ -67,23 +67,22 @@ import androidx.compose.ui.window.Dialog
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageState
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageView
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun LanguagePickerDialog(
-    state: DownloadableLanguageDialogState,
+fun <T> LanguagePickerDialog(
+    state: DownloadableLanguageDialogState<T>,
     heading: @Composable ColumnScope.() -> Unit,
     onDismissDialog: () -> Unit,
-    onLanguageChosen: (LanguageView) -> Unit = {},
-    onLanguageDeleted: suspend (LanguageView) -> Unit = {},
-    onLanguageDownloaded: suspend (LanguageView) -> Unit = {}
+    onLanguageChosen: (T) -> Unit = {},
+    onLanguageDeleted: suspend (T) -> Unit = {},
+    onLanguageDownloaded: suspend (T) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -185,7 +184,7 @@ fun LanguagePickerDialog(
                                     ) {
                                         TextButton(
                                             onClick = {
-                                                onLanguageChosen(translatableLanguage.languageView)
+                                                onLanguageChosen(translatableLanguage.languageEntity)
                                             },
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 6.dp)
@@ -204,7 +203,7 @@ fun LanguagePickerDialog(
                                             IconButton(
                                                 onClick = {
                                                     coroutineScope.launch {
-                                                        onLanguageDeleted(translatableLanguage.languageView)
+                                                        onLanguageDeleted(translatableLanguage.languageEntity)
                                                     }
                                                 }
                                             ) {
@@ -280,11 +279,11 @@ fun LanguagePickerDialog(
                                     coroutineScope.launch {
                                         when (translatableLanguage.downloadableLanguageState) {
                                             DownloadableLanguageState.AVAILABLE -> {
-                                                onLanguageDownloaded(translatableLanguage.languageView)
+                                                onLanguageDownloaded(translatableLanguage.languageEntity)
                                             }
 
                                             DownloadableLanguageState.ERROR -> {
-                                                onLanguageDownloaded(translatableLanguage.languageView)
+                                                onLanguageDownloaded(translatableLanguage.languageEntity)
                                             }
 
                                             else -> {}
@@ -381,12 +380,12 @@ fun LanguagePickerDialog(
 @Composable
 fun PreviewLanguageTranslationPickerDialog() {
     var showDialog by remember { mutableStateOf(false) }
-    var originalLanguage by remember { mutableStateOf<LanguageView?>(null) }
+    var originalLanguage by remember { mutableStateOf<TranslationLanguageView?>(null) }
     var downloadedLanguages by remember {
         mutableStateOf(
             persistentListOf(
-                LanguageView.ENGLISH,
-                LanguageView.SWAHILI,
+                TranslationLanguageView.ENGLISH,
+                TranslationLanguageView.SWAHILI,
             )
         )
     }
@@ -409,7 +408,7 @@ fun PreviewLanguageTranslationPickerDialog() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Original Language: ${originalLanguage?.let { stringResource(id = it.string) } ?: "Unknown"}",
+                        text = "Original Language: ${originalLanguage?.let { stringResource(id = it.languageView.string) } ?: "Unknown"}",
                         textAlign = TextAlign.Center
                     )
 

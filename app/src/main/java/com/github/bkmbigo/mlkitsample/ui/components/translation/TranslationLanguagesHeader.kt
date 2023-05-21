@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,15 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.R
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationLanguageOption
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageOption
 
 @Composable
 fun TranslationLanguageHeader(
     state: TranslationScreenState,
     showLanguageSelectionDialog: (TranslationLanguageOption) -> Unit,
-    onReverseLanguages: () -> Unit = {},
     modifier: Modifier = Modifier,
+    onReverseLanguages: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -57,9 +55,8 @@ fun TranslationLanguageHeader(
         ) {
             Text(
                 text = stringResource(
-                    id = state.originalLanguage?.let {
-                        it.string
-                    } ?: R.string.label_select_language
+                    id = state.originalLanguage?.languageView?.string
+                        ?: R.string.label_select_language
                 ),
                 fontSize = 16.sp,
             )
@@ -91,9 +88,8 @@ fun TranslationLanguageHeader(
         ) {
             Text(
                 text = stringResource(
-                    id = state.targetLanguage?.let {
-                        it.string
-                    } ?: R.string.label_select_language
+                    id = state.targetLanguage?.languageView?.string
+                        ?: R.string.label_select_language
                 ),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(vertical = 6.dp)

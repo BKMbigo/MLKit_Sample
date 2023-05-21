@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text.states
+package com.github.bkmbigo.mlkitsample.ui.screens.text.utils
 
 enum class TranslationLanguageOption {
     ORIGINAL_LANGUAGE,

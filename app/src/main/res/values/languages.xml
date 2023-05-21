@@ -60,7 +60,7 @@
     <string name="language_kyrgyz">🇰🇬 Kyrgyz</string>
     <string name="language_latin">Latin</string>
     <string name="language_luxembourgish">🇱🇺 Luxembourgish</string>
-    <string name="language_laos">🇱🇦 Laos</string>
+    <string name="language_lao">🇱🇦 Lao</string>
     <string name="language_lithuanian">🇱🇹 Lithuanian</string>
     <string name="language_latvian">🇱🇻 Latvian</string>
     <string name="language_malagasy">🇲🇬 Malagasy</string>
@@ -79,7 +79,7 @@
     <string name="language_polish">🇵🇱 Polish</string>
     <string name="language_pashto">🇦🇫 Pashto</string>
     <string name="language_romanian">🇷🇴 Romanian</string>
-    <string name="language_Russian">🇷🇺 Russian</string>
+    <string name="language_russian">🇷🇺 Russian</string>
     <string name="language_sindhi">🇵🇰 Sindhi</string>
     <string name="language_sinhala">🇱🇰 Sinhala</string>
     <string name="language_slovak">🇸🇰 Slovak</string>
@@ -90,7 +90,7 @@
     <string name="language_albanian">🇦🇱 Albanian</string>
     <string name="language_serbian">🇷🇸 Serbian</string>
     <string name="language_sesotho">🇱🇸 Sesotho</string>
-    <string name="language_sundanese">🇸🇩 Sundanese</string>
+    <string name="language_sundanese">🇮🇩 Sundanese</string>
     <string name="language_swedish">🇸🇪 Swedish</string>
     <string name="language_tamil">🇮🇳 Tamil</string>
     <string name="language_telugu">🇮🇳 Telugu</string>

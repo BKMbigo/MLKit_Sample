@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text.states
+package com.github.bkmbigo.mlkitsample.ui.screens.text.utils
 
 enum class SmartReplyParticipant {
     LOCAL_USER,

@@ -1,11 +1,14 @@
 package com.github.bkmbigo.mlkitsample.ui.components.dialogs.states
 
 import androidx.compose.runtime.Stable
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
-data class DownloadableLanguageView(
+data class DownloadableLanguageView <T>(
+    val languageEntity: T,
     val languageView: LanguageView,
     val downloadableLanguageState: DownloadableLanguageState = DownloadableLanguageState.AVAILABLE
 ) {
@@ -22,13 +25,14 @@ data class DownloadableLanguageView(
          */
         @Stable
         fun generateTranslationDownloadableLanguageViews(
-            downloadedLanguages: PersistentList<LanguageView>,
-            downloadingLanguages: PersistentList<LanguageView> = persistentListOf(),
-            errorLanguages: PersistentList<LanguageView> = persistentListOf(),
-            deletingLanguages: PersistentList<LanguageView> = persistentListOf()
-        ): List<DownloadableLanguageView> = LanguageView.values().toList().map { language ->
+            downloadedLanguages: PersistentList<TranslationLanguageView>,
+            downloadingLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
+            errorLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
+            deletingLanguages: PersistentList<TranslationLanguageView> = persistentListOf()
+        ): List<DownloadableLanguageView<TranslationLanguageView>> = TranslationLanguageView.values().map { language ->
             DownloadableLanguageView(
                 language,
+                language.languageView,
                 if (errorLanguages.contains(language)) {
                     DownloadableLanguageState.ERROR
                 } else if (deletingLanguages.contains(language)) {
@@ -45,13 +49,14 @@ data class DownloadableLanguageView(
 
         @Stable
         fun generateEntityExtractionDownloadableLanguageViews(
-            downloadedLanguages: PersistentList<LanguageView>,
-            downloadingLanguages: PersistentList<LanguageView> = persistentListOf(),
-            errorLanguages: PersistentList<LanguageView> = persistentListOf(),
-            deletingLanguages: PersistentList<LanguageView> = persistentListOf()
-        ): List<DownloadableLanguageView> = LanguageView.getAvailableEntityExtractionLanguages().map { language ->
+            downloadedLanguages: PersistentList<EntityExtractionLanguage>,
+            downloadingLanguages: PersistentList<EntityExtractionLanguage> = persistentListOf(),
+            errorLanguages: PersistentList<EntityExtractionLanguage> = persistentListOf(),
+            deletingLanguages: PersistentList<EntityExtractionLanguage> = persistentListOf()
+        ): List<DownloadableLanguageView<EntityExtractionLanguage>> = EntityExtractionLanguage.values().map { language ->
             DownloadableLanguageView(
-                language,
+                languageEntity = language,
+                languageView = language.languageView,
                 if (errorLanguages.contains(language)) {
                     DownloadableLanguageState.ERROR
                 } else if (deletingLanguages.contains(language)) {

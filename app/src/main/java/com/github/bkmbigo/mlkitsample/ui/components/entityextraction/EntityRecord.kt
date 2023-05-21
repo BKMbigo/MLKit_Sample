@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.PermPhoneMsg
 import androidx.compose.material.icons.filled.PersonAdd
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Share
@@ -50,7 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityRecordState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.android.gms.internal.mlkit_entity_extraction.zzahy
 import com.google.mlkit.nl.entityextraction.DateTimeEntity
@@ -89,7 +89,7 @@ fun EntityRecord(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = state.languageView.string),
+                text = stringResource(id = state.languageView.languageView.string),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 17.sp,
                 modifier = Modifier.padding(start = 8.dp)
@@ -324,7 +324,7 @@ private fun getEntityText(entity: Entity): Int =
 @Composable
 private fun PreviewEntityRecord() {
     val state = EntityRecordState(
-        languageView = LanguageView.ENGLISH,
+        languageView = EntityExtractionLanguage.ENGLISH,
         loading = false,
         text = "Meet me at 430, WestSide Nairobi on Wednesday at 6pm. Call me on 0711554545 for clarification.",
         entities = persistentListOf(

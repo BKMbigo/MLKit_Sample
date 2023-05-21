@@ -3,24 +3,25 @@ package com.github.bkmbigo.mlkitsample.ui.components.dialogs.states
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationLanguageOption
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
-data class DownloadableLanguageDialogState(
-    val languages: PersistentList<DownloadableLanguageView>,
+data class DownloadableLanguageDialogState<T>(
+    val languages: PersistentList<DownloadableLanguageView<T>>,
 )
 
 @Composable
 fun rememberDownloadableLanguageDialogState(
-    downloadedLanguages: PersistentList<LanguageView> = persistentListOf(),
-    downloadingLanguages: PersistentList<LanguageView> = persistentListOf(),
-    errorLanguages: PersistentList<LanguageView> = persistentListOf(),
-    deletingLanguages: PersistentList<LanguageView> = persistentListOf()
-): DownloadableLanguageDialogState = remember {
+    downloadedLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
+    downloadingLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
+    errorLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
+    deletingLanguages: PersistentList<TranslationLanguageView> = persistentListOf()
+): DownloadableLanguageDialogState<TranslationLanguageView> = remember {
     DownloadableLanguageDialogState(
         DownloadableLanguageView.generateTranslationDownloadableLanguageViews(
             downloadedLanguages = downloadedLanguages,
@@ -34,7 +35,7 @@ fun rememberDownloadableLanguageDialogState(
 @Composable
 fun rememberDownloadableLanguageDialogState(
     state: TranslationScreenState
-): DownloadableLanguageDialogState = remember(state) {
+): DownloadableLanguageDialogState<TranslationLanguageView> = remember(state) {
     DownloadableLanguageDialogState(
         DownloadableLanguageView.generateTranslationDownloadableLanguageViews(
             downloadedLanguages = state.downloadedLanguages,
@@ -48,7 +49,7 @@ fun rememberDownloadableLanguageDialogState(
 @Composable
 fun rememberDownloadableLanguageDialogState(
     state: EntityExtractionScreenState
-): DownloadableLanguageDialogState = remember(state) {
+): DownloadableLanguageDialogState<EntityExtractionLanguage> = remember(state) {
     DownloadableLanguageDialogState(
         DownloadableLanguageView.generateEntityExtractionDownloadableLanguageViews(
             downloadedLanguages = state.downloadedLanguages,

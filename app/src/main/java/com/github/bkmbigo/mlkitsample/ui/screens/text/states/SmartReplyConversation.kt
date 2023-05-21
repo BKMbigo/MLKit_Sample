@@ -1,7 +1,7 @@
 package com.github.bkmbigo.mlkitsample.ui.screens.text.states
 
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.SmartReplyParticipant
 import com.google.mlkit.nl.smartreply.TextMessage
-import kotlinx.datetime.Instant
 
 data class SmartReplyConversation(
     val participant: SmartReplyParticipant,

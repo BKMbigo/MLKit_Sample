@@ -51,7 +51,8 @@ import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.entityextraction.EntityRecord
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -83,10 +84,10 @@ fun EntityExtractionScreen(
 fun EntityExtractionScreenContent(
     state: EntityExtractionScreenState,
     onNavigateUp: () -> Unit = {},
-    onExtractEntity: suspend (LanguageView, String) -> Unit = { _, _ -> },
-    onLanguageChange: (LanguageView) -> Unit = {},
-    onLanguageDownloaded: suspend (LanguageView) -> Unit = {},
-    onLanguageDeleted: suspend (LanguageView) -> Unit = {}
+    onExtractEntity: suspend (EntityExtractionLanguage, String) -> Unit = { _, _ -> },
+    onLanguageChange: (EntityExtractionLanguage) -> Unit = {},
+    onLanguageDownloaded: suspend (EntityExtractionLanguage) -> Unit = {},
+    onLanguageDeleted: suspend (EntityExtractionLanguage) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -194,7 +195,7 @@ fun EntityExtractionScreenContent(
                         ) {
                             Text(
                                 text = stringResource(
-                                    id = state.currentLanguage?.string
+                                    id = state.currentLanguage?.languageView?.string
                                         ?: R.string.label_select_language
                                 )
                             )

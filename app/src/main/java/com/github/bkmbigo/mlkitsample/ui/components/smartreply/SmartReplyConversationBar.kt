@@ -30,10 +30,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.SmartReplyConversation
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.SmartReplyParticipant
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.SmartReplyParticipant
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import kotlinx.datetime.Clock
-import java.time.Instant
 
 @Composable
 fun SmartReplyConversationBar(

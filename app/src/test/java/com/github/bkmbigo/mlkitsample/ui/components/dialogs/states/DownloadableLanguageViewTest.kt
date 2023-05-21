@@ -1,6 +1,6 @@
 package com.github.bkmbigo.mlkitsample.ui.components.dialogs.states
 
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

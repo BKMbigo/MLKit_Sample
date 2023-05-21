@@ -53,9 +53,10 @@ import com.github.bkmbigo.mlkitsample.ui.components.TextInputTextField
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.translation.TranslationLanguageHeader
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationLanguageOption
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageOption
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.DownloadConditions
@@ -74,7 +75,7 @@ import kotlinx.coroutines.tasks.await
 @Destination
 @Composable
 fun TranslationScreen(
-    originalLanguage: LanguageView? = null,
+    originalLanguage: TranslationLanguageView? = null,
     text: String? = null,
     navigator: DestinationsNavigator
 ) {
@@ -97,11 +98,7 @@ fun TranslationScreen(
             .await()
             .toList()
             .mapNotNull {
-                try {
-                    LanguageView.getLanguageView(it.language)
-                } catch (e: Exception) {
-                    null
-                }
+                TranslationLanguageView.getTranslationLanguageView(it.language)
             }
         state = state.copy(downloadedLanguages = list.toPersistentList())
     }
@@ -114,10 +111,10 @@ fun TranslationScreen(
         onNavigateUp = {
            navigator.navigateUp()
         },
-        onTranslateText = { originalLanguage: LanguageView, targetLanguage: LanguageView, text: String ->
+        onTranslateText = { originalLanguage: TranslationLanguageView, targetLanguage: TranslationLanguageView, text: String ->
             val options = TranslatorOptions.Builder()
-                .setSourceLanguage(originalLanguage.getTranslateLanguage())
-                .setTargetLanguage(targetLanguage.getTranslateLanguage())
+                .setSourceLanguage(originalLanguage.translationLanguage)
+                .setTargetLanguage(targetLanguage.translationLanguage)
                 .build()
 
             val translator = Translation.getClient(options)
@@ -133,7 +130,7 @@ fun TranslationScreen(
         onCopyContent = {},
         onShareContent = {},
         onLanguageDeleted = { languageView ->
-            val model = TranslateRemoteModel.Builder(languageView.getTranslateLanguage()).build()
+            val model = TranslateRemoteModel.Builder(languageView.translationLanguage).build()
             state = state.copy(
                 deletingLanguages = state.deletingLanguages.add(languageView),
                 errorLanguages = state.errorLanguages.remove(languageView)
@@ -145,11 +142,7 @@ fun TranslationScreen(
                     .await()
                     .toList()
                     .mapNotNull {
-                        try {
-                            LanguageView.getLanguageView(it.language)
-                        } catch (e: Exception) {
-                            null
-                        }
+                        TranslationLanguageView.getTranslationLanguageView(it.language)
                     }.toPersistentList()
                 state = state.copy(
                     downloadedLanguages = list.toPersistentList(),
@@ -164,7 +157,7 @@ fun TranslationScreen(
 
         },
         onLanguageDownloaded = { languageView ->
-            val model = TranslateRemoteModel.Builder(languageView.getTranslateLanguage()).build()
+            val model = TranslateRemoteModel.Builder(languageView.translationLanguage).build()
             state = state.copy(
                 downloadingLanguages = state.downloadingLanguages.add(languageView),
                 errorLanguages = state.errorLanguages.remove(languageView)
@@ -176,11 +169,7 @@ fun TranslationScreen(
                     .await()
                     .toList()
                     .mapNotNull {
-                        try {
-                            LanguageView.getLanguageView(it.language)
-                        } catch (e: Exception) {
-                            null
-                        }
+                        TranslationLanguageView.getTranslationLanguageView(it.language)
                     }.toPersistentList()
                 state = state.copy(
                     downloadedLanguages = list.toPersistentList(),
@@ -203,11 +192,11 @@ private fun TranslationScreenContent(
     state: TranslationScreenState,
     onStateChanged: (TranslationScreenState) -> Unit,
     onNavigateUp: () -> Unit = {},
-    onTranslateText: suspend (LanguageView, LanguageView, String) -> Unit = { _, _, _ -> },
+    onTranslateText: suspend (TranslationLanguageView, TranslationLanguageView, String) -> Unit = { _, _, _ -> },
     onCopyContent: (String) -> Unit = {},
     onShareContent: (String) -> Unit = {},
-    onLanguageDeleted: suspend (LanguageView) -> Unit = {},
-    onLanguageDownloaded: suspend (LanguageView) -> Unit = {},
+    onLanguageDeleted: suspend (TranslationLanguageView) -> Unit = {},
+    onLanguageDownloaded: suspend (TranslationLanguageView) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
