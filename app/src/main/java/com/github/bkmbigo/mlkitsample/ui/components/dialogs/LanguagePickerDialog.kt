@@ -17,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -64,19 +65,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.github.bkmbigo.mlkitsample.R
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.TranslationLanguageDialogState
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.TranslationLanguageState
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberTranslationLanguageDialogState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.LanguageView
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationLanguageOption
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageDialogState
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageState
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageView
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun TranslationLanguagePickerDialog(
-    state: TranslationLanguageDialogState,
+fun LanguagePickerDialog(
+    state: DownloadableLanguageDialogState,
+    heading: @Composable ColumnScope.() -> Unit,
     onDismissDialog: () -> Unit,
     onLanguageChosen: (LanguageView) -> Unit = {},
     onLanguageDeleted: suspend (LanguageView) -> Unit = {},
@@ -86,19 +89,19 @@ fun TranslationLanguagePickerDialog(
 
     val downloadedLanguages by remember(state) {
         derivedStateOf {
-            state.languages.filter { it.translationLanguageState == TranslationLanguageState.DOWNLOADED }
+            state.languages.filter { it.downloadableLanguageState == DownloadableLanguageState.DOWNLOADED }
         }
     }
 
     val availableLanguages by remember(state) {
         derivedStateOf {
-            state.languages.filter { it.translationLanguageState != TranslationLanguageState.DOWNLOADED }
+            state.languages.filter { it.downloadableLanguageState != DownloadableLanguageState.DOWNLOADED }
         }
     }
 
     val isSafeToCloseDialog by remember(state) {
         derivedStateOf {
-            state.languages.none { it.translationLanguageState == TranslationLanguageState.DOWNLOADING || it.translationLanguageState == TranslationLanguageState.DELETING }
+            state.languages.none { it.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING || it.downloadableLanguageState == DownloadableLanguageState.DELETING }
         }
     }
 
@@ -143,17 +146,7 @@ fun TranslationLanguagePickerDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = stringResource(
-                    id = when (state.languageOption) {
-                        TranslationLanguageOption.ORIGINAL_LANGUAGE -> R.string.label_select_original_language
-                        TranslationLanguageOption.TARGET_LANGUAGE -> R.string.label_select_target_language
-                    }
-                ),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            heading()
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -285,12 +278,12 @@ fun TranslationLanguagePickerDialog(
                             IconButton(
                                 onClick = {
                                     coroutineScope.launch {
-                                        when (translatableLanguage.translationLanguageState) {
-                                            TranslationLanguageState.AVAILABLE -> {
+                                        when (translatableLanguage.downloadableLanguageState) {
+                                            DownloadableLanguageState.AVAILABLE -> {
                                                 onLanguageDownloaded(translatableLanguage.languageView)
                                             }
 
-                                            TranslationLanguageState.ERROR -> {
+                                            DownloadableLanguageState.ERROR -> {
                                                 onLanguageDownloaded(translatableLanguage.languageView)
                                             }
 
@@ -298,16 +291,16 @@ fun TranslationLanguagePickerDialog(
                                         }
                                     }
                                 },
-                                enabled = !(translatableLanguage.translationLanguageState == TranslationLanguageState.DOWNLOADING ||
-                                        translatableLanguage.translationLanguageState == TranslationLanguageState.DELETING)
+                                enabled = !(translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
+                                        translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING)
                             ) {
                                 Icon(
-                                    imageVector = when (translatableLanguage.translationLanguageState) {
-                                        TranslationLanguageState.AVAILABLE -> Icons.Default.DownloadForOffline
-                                        TranslationLanguageState.DOWNLOADING -> Icons.Default.Downloading
-                                        TranslationLanguageState.DOWNLOADED -> Icons.Default.DownloadDone
-                                        TranslationLanguageState.ERROR -> Icons.Default.Error
-                                        TranslationLanguageState.DELETING -> Icons.Default.AutoDelete
+                                    imageVector = when (translatableLanguage.downloadableLanguageState) {
+                                        DownloadableLanguageState.AVAILABLE -> Icons.Default.DownloadForOffline
+                                        DownloadableLanguageState.DOWNLOADING -> Icons.Default.Downloading
+                                        DownloadableLanguageState.DOWNLOADED -> Icons.Default.DownloadDone
+                                        DownloadableLanguageState.ERROR -> Icons.Default.Error
+                                        DownloadableLanguageState.DELETING -> Icons.Default.AutoDelete
                                     },
                                     contentDescription = null,
                                 )
@@ -315,8 +308,8 @@ fun TranslationLanguagePickerDialog(
                         }
 
                         AnimatedVisibility(
-                            visible = translatableLanguage.translationLanguageState == TranslationLanguageState.DOWNLOADING ||
-                                    translatableLanguage.translationLanguageState == TranslationLanguageState.DELETING,
+                            visible = translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
+                                    translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING,
                             enter = slideInVertically() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
                             exit = slideOutVertically() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally)
                         ) {
@@ -399,10 +392,9 @@ fun PreviewLanguageTranslationPickerDialog() {
     }
 
     val state =
-        rememberTranslationLanguageDialogState(
-                languageOption = TranslationLanguageOption.ORIGINAL_LANGUAGE,
-                downloadedLanguages = downloadedLanguages
-            )
+        rememberDownloadableLanguageDialogState(
+            downloadedLanguages = downloadedLanguages
+        )
 
     MLKitSampleTheme {
         Scaffold {
@@ -438,10 +430,18 @@ fun PreviewLanguageTranslationPickerDialog() {
 
 
                 if (showDialog) {
-                    TranslationLanguagePickerDialog(
+                    LanguagePickerDialog(
                         state = state,
                         onDismissDialog = {
                             showDialog = false
+                        },
+                        heading = {
+                            Text(
+                                text = "Language",
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         },
                         onLanguageChosen = {
                             originalLanguage = it

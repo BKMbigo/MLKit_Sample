@@ -1,10 +1,14 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text
+package com.github.bkmbigo.mlkitsample.ui.screens.text.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.res.stringResource
 import com.github.bkmbigo.mlkitsample.R
+import com.google.mlkit.nl.entityextraction.EntityExtraction
+import com.google.mlkit.nl.entityextraction.EntityExtractionRemoteModel
+import com.google.mlkit.nl.entityextraction.EntityExtractorOptions
 import com.google.mlkit.nl.translate.TranslateLanguage
+import kotlinx.collections.immutable.persistentListOf
 
 enum class LanguageView(
     val string: Int,
@@ -22,6 +26,8 @@ enum class LanguageView(
     HINDI(R.string.language_hindi, "hi");
 
     fun getTranslateLanguage() = getTranslateLanguage(this)
+
+    fun getEntityExtractionLanguage() = getEntityExtractionLanguage(this)
 
     companion object {
         @Stable
@@ -58,6 +64,42 @@ enum class LanguageView(
                 CHINESE -> TranslateLanguage.CHINESE
                 JAPANESE -> TranslateLanguage.JAPANESE
                 HINDI -> TranslateLanguage.HINDI
+            }
+
+        @Stable
+        fun getAvailableEntityExtractionLanguages() = persistentListOf(
+            ENGLISH,
+            DUTCH,
+            FRENCH,
+            GERMAN,
+            SPANISH,
+            JAPANESE,
+            CHINESE
+        )
+
+        fun getEntityExtractionLanguage(languageView: LanguageView) = when(languageView) {
+            ENGLISH -> EntityExtractorOptions.ENGLISH
+            FRENCH -> EntityExtractorOptions.FRENCH
+            SPANISH -> EntityExtractorOptions.SPANISH
+            GERMAN -> EntityExtractorOptions.GERMAN
+            DUTCH -> EntityExtractorOptions.DUTCH
+            PORTUGUESE -> EntityExtractorOptions.PORTUGUESE
+            CHINESE -> EntityExtractorOptions.CHINESE
+            JAPANESE -> EntityExtractorOptions.JAPANESE
+            else -> throw IllegalArgumentException("Language not found")
+        }
+
+        fun getEntityLanguageView(remoteModel: EntityExtractionRemoteModel) =
+            when(remoteModel.modelIdentifier) {
+                EntityExtractorOptions.ENGLISH -> ENGLISH
+                EntityExtractorOptions.FRENCH -> FRENCH
+                EntityExtractorOptions.GERMAN -> GERMAN
+                EntityExtractorOptions.SPANISH -> ENGLISH
+                EntityExtractorOptions.DUTCH -> ENGLISH
+                EntityExtractorOptions.PORTUGUESE -> PORTUGUESE
+                EntityExtractorOptions.CHINESE -> CHINESE
+                EntityExtractorOptions.JAPANESE -> JAPANESE
+                else -> throw IllegalArgumentException("Language Not Available")
             }
 
         /**

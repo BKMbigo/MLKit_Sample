@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.MainNavGraph
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.TextInputTextField
+import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.ramcosta.composedestinations.annotation.Destination

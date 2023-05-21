@@ -75,7 +75,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
-@MainNavGraph(start = true)
+@MainNavGraph
 @Destination
 @Composable
 fun SmartReplyScreen() {
@@ -170,13 +170,15 @@ fun SmartReplyScreenContent(
                     }
                 },
                 actions = {
-                  TextButton(
-                      onClick = {
-                          onClearChat()
-                      }
-                  ) {
-                      Text(text = stringResource(id = R.string.label_clear_chat))
-                  }
+                    if (state.conversations.isNotEmpty()) {
+                        TextButton(
+                            onClick = {
+                                onClearChat()
+                            }
+                        ) {
+                            Text(text = stringResource(id = R.string.label_clear_chat))
+                        }
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
             )

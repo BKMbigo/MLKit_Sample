@@ -5,6 +5,8 @@
     <string name="label_translation">Translation</string>
     <string name="label_entity_extraction">Entity Extraction</string>
     <string name="label_smart_reply">Smart Reply</string>
+    <string name="label_language">Language</string>
+    <string name="label_language_value">Language:</string>
     <string name="label_select_language">Select Language</string>
     <string name="label_select_original_language">Select Original Language</string>
     <string name="label_select_target_language">Select Target Language</string>
@@ -14,6 +16,18 @@
     <string name="label_yes">Yes</string>
     <string name="label_no">No</string>
     <string name="label_reply">Reply</string>
+
+    <string name="label_unknown">Unknown</string>
+    <string name="label_extraction_address">Location</string>
+    <string name="label_extraction_phone">Phone Number</string>
+    <string name="label_extraction_book">Book</string>
+    <string name="label_extraction_money">Money</string>
+    <string name="label_extraction_date_time">Date/Time</string>
+    <string name="label_extraction_payment_card">Payment Card</string>
+    <string name="label_extraction_flight_number">Flight Number</string>
+    <string name="label_extraction_email">Email Address</string>
+    <string name="label_extraction_url">Web Url</string>
+    <string name="label_extraction_tracking_number">Tracking Number</string>
 
     <string name="label_downloaded_languages">Downloaded Languages</string>
     <string name="label_no_downloaded_languages">No Downloaded Language</string>

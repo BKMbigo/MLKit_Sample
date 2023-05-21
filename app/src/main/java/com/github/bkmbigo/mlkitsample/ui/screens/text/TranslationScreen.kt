@@ -50,9 +50,10 @@ import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.MainNavGraph
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.TextInputTextField
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.TranslationLanguagePickerDialog
-import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberTranslationLanguageDialogState
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
+import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.translation.TranslationLanguageHeader
+import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationLanguageOption
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
@@ -163,7 +164,7 @@ fun TranslationScreen(
         onLanguageDownloaded = { languageView ->
             val model = TranslateRemoteModel.Builder(languageView.getTranslateLanguage()).build()
             state = state.copy(
-                downloadingLanguages = state.deletingLanguages.add(languageView),
+                downloadingLanguages = state.downloadingLanguages.add(languageView),
                 errorLanguages = state.errorLanguages.remove(languageView)
             )
             try {
@@ -538,12 +539,23 @@ private fun TranslationScreenContent(
                 enter = expandVertically(expandFrom = Alignment.CenterVertically),
                 exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
             ) {
-                TranslationLanguagePickerDialog(
-                    state = rememberTranslationLanguageDialogState(
-                        languageOption = showSelectLanguageDialog
-                            ?: TranslationLanguageOption.ORIGINAL_LANGUAGE,
+                LanguagePickerDialog(
+                    state = rememberDownloadableLanguageDialogState(
                         state = state
                     ),
+                    heading = {
+                        Text(
+                            text = stringResource(
+                                id = when (showSelectLanguageDialog) {
+                                    TranslationLanguageOption.ORIGINAL_LANGUAGE -> R.string.label_select_original_language
+                                    else -> R.string.label_select_target_language
+                                }
+                            ),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    },
                     onDismissDialog = {
                         showSelectLanguageDialog = null
                         onStateChanged(

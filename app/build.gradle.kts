@@ -91,6 +91,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-text-google-fonts")
 
     implementation("androidx.datastore:datastore-preferences-android:1.1.0-alpha04")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
