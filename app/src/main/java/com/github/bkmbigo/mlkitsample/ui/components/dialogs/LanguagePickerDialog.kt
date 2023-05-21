@@ -27,7 +27,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoDelete
 import androidx.compose.material.icons.filled.Clear
@@ -156,172 +158,177 @@ fun <T> LanguagePickerDialog(
                 modifier = Modifier.padding(start = 6.dp)
             )
 
-            AnimatedContent(
-                targetState = downloadedLanguages.isNotEmpty(),
-                transitionSpec = {
-                    slideInHorizontally() with slideOutHorizontally()
-                },
-                label = ""
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
             ) {
-                when (it) {
-                    true -> {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f, true),
-                            contentPadding = PaddingValues(vertical = 4.dp)
-                        ) {
-                            items(downloadedLanguages) { translatableLanguage ->
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 2.dp, horizontal = 4.dp)
-                                ) {
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        TextButton(
-                                            onClick = {
-                                                onLanguageChosen(translatableLanguage.languageEntity)
-                                            },
-                                            modifier = Modifier
-                                                .padding(vertical = 4.dp, horizontal = 6.dp)
-                                                .weight(1f, true)
-                                        ) {
-                                            Text(
-                                                text = stringResource(id = translatableLanguage.languageView.string),
-                                                fontSize = 17.sp,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            IconButton(
-                                                onClick = {
-                                                    coroutineScope.launch {
-                                                        onLanguageDeleted(translatableLanguage.languageEntity)
-                                                    }
-                                                }
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.DeleteForever,
-                                                    contentDescription = null
-                                                )
-                                            }
-                                        }
-                                    }
-
-                                    Divider(
+                AnimatedContent(
+                    targetState = downloadedLanguages.isNotEmpty(),
+                    transitionSpec = {
+                        slideInHorizontally() with slideOutHorizontally()
+                    },
+                    label = ""
+                ) {
+                    when (it) {
+                        true -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentPadding = PaddingValues(vertical = 4.dp)
+                            ) {
+                                items(downloadedLanguages) { translatableLanguage ->
+                                    Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(horizontal = 8.dp)
-                                    )
+                                            .padding(vertical = 2.dp, horizontal = 4.dp)
+                                    ) {
+
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            TextButton(
+                                                onClick = {
+                                                    onLanguageChosen(translatableLanguage.languageEntity)
+                                                },
+                                                modifier = Modifier
+                                                    .padding(vertical = 4.dp, horizontal = 6.dp)
+                                                    .weight(1f, true)
+                                            ) {
+                                                Text(
+                                                    text = stringResource(id = translatableLanguage.languageView.string),
+                                                    fontSize = 17.sp,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                IconButton(
+                                                    onClick = {
+                                                        coroutineScope.launch {
+                                                            onLanguageDeleted(translatableLanguage.languageEntity)
+                                                        }
+                                                    }
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.DeleteForever,
+                                                        contentDescription = null
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        Divider(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    false -> {
-                        Text(
-                            text = stringResource(id = R.string.label_no_downloaded_languages),
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontSize = 17.sp,
-                            fontStyle = FontStyle.Italic
-                        )
+                        false -> {
+                            Text(
+                                text = stringResource(id = R.string.label_no_downloaded_languages),
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                fontSize = 17.sp,
+                                fontStyle = FontStyle.Italic
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = stringResource(id = R.string.label_available_languages),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(start = 6.dp)
-            )
+                Text(
+                    text = stringResource(id = R.string.label_available_languages),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 6.dp)
+                )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 4.dp)
-            ) {
-                items(availableLanguages) { translatableLanguage ->
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 2.dp, horizontal = 4.dp)
-                    ) {
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(id = translatableLanguage.languageView.string),
-                                fontSize = 17.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .padding(vertical = 4.dp)
-                                    .weight(1f, true)
-                            )
-
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        when (translatableLanguage.downloadableLanguageState) {
-                                            DownloadableLanguageState.AVAILABLE -> {
-                                                onLanguageDownloaded(translatableLanguage.languageEntity)
-                                            }
-
-                                            DownloadableLanguageState.ERROR -> {
-                                                onLanguageDownloaded(translatableLanguage.languageEntity)
-                                            }
-
-                                            else -> {}
-                                        }
-                                    }
-                                },
-                                enabled = !(translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
-                                        translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING)
-                            ) {
-                                Icon(
-                                    imageVector = when (translatableLanguage.downloadableLanguageState) {
-                                        DownloadableLanguageState.AVAILABLE -> Icons.Default.DownloadForOffline
-                                        DownloadableLanguageState.DOWNLOADING -> Icons.Default.Downloading
-                                        DownloadableLanguageState.DOWNLOADED -> Icons.Default.DownloadDone
-                                        DownloadableLanguageState.ERROR -> Icons.Default.Error
-                                        DownloadableLanguageState.DELETING -> Icons.Default.AutoDelete
-                                    },
-                                    contentDescription = null,
-                                )
-                            }
-                        }
-
-                        AnimatedVisibility(
-                            visible = translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
-                                    translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING,
-                            enter = slideInVertically() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
-                            exit = slideOutVertically() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally)
-                        ) {
-                            LinearProgressIndicator(
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-
-                        Divider(
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 4.dp)
+                ) {
+                    items(availableLanguages) { translatableLanguage ->
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
-                        )
+                                .padding(vertical = 2.dp, horizontal = 4.dp)
+                        ) {
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(id = translatableLanguage.languageView.string),
+                                    fontSize = 17.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .weight(1f, true)
+                                )
+
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            when (translatableLanguage.downloadableLanguageState) {
+                                                DownloadableLanguageState.AVAILABLE -> {
+                                                    onLanguageDownloaded(translatableLanguage.languageEntity)
+                                                }
+
+                                                DownloadableLanguageState.ERROR -> {
+                                                    onLanguageDownloaded(translatableLanguage.languageEntity)
+                                                }
+
+                                                else -> {}
+                                            }
+                                        }
+                                    },
+                                    enabled = !(translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
+                                            translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING)
+                                ) {
+                                    Icon(
+                                        imageVector = when (translatableLanguage.downloadableLanguageState) {
+                                            DownloadableLanguageState.AVAILABLE -> Icons.Default.DownloadForOffline
+                                            DownloadableLanguageState.DOWNLOADING -> Icons.Default.Downloading
+                                            DownloadableLanguageState.DOWNLOADED -> Icons.Default.DownloadDone
+                                            DownloadableLanguageState.ERROR -> Icons.Default.Error
+                                            DownloadableLanguageState.DELETING -> Icons.Default.AutoDelete
+                                        },
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
+
+                            AnimatedVisibility(
+                                visible = translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DOWNLOADING ||
+                                        translatableLanguage.downloadableLanguageState == DownloadableLanguageState.DELETING,
+                                enter = slideInVertically() + expandHorizontally(expandFrom = Alignment.CenterHorizontally),
+                                exit = slideOutVertically() + shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally)
+                            ) {
+                                LinearProgressIndicator(
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp)
+                            )
+                        }
                     }
                 }
             }
