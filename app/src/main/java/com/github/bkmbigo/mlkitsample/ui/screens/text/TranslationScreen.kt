@@ -64,6 +64,7 @@ import com.google.mlkit.nl.translate.TranslateRemoteModel
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
@@ -74,7 +75,8 @@ import kotlinx.coroutines.tasks.await
 @Composable
 fun TranslationScreen(
     originalLanguage: LanguageView? = null,
-    text: String? = null
+    text: String? = null,
+    navigator: DestinationsNavigator
 ) {
 
     val modelManager = remember { RemoteModelManager.getInstance() }
@@ -110,7 +112,7 @@ fun TranslationScreen(
             state = it
         },
         onNavigateUp = {
-
+           navigator.navigateUp()
         },
         onTranslateText = { originalLanguage: LanguageView, targetLanguage: LanguageView, text: String ->
             val options = TranslatorOptions.Builder()

@@ -54,12 +54,15 @@ import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScr
 import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-@MainNavGraph(start = true)
+@MainNavGraph
 @Destination
 @Composable
-fun EntityExtractionScreen() {
+fun EntityExtractionScreen(
+    navigator: DestinationsNavigator
+) {
     val viewModel: EntityExtractionViewModel = viewModel()
 
     val state by viewModel.state.collectAsState()
@@ -67,7 +70,7 @@ fun EntityExtractionScreen() {
 
     EntityExtractionScreenContent(
         state = state,
-        onNavigateUp = {},
+        onNavigateUp = { navigator.navigateUp() },
         onExtractEntity = viewModel::extractEntities,
         onLanguageChange = viewModel::updateLanguage,
         onLanguageDownloaded = viewModel::downloadLanguage,

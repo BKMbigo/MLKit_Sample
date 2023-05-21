@@ -68,6 +68,7 @@ import com.github.bkmbigo.mlkitsample.ui.screens.text.states.SmartReplyScreenSta
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.nl.smartreply.SmartReply
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
@@ -78,7 +79,9 @@ import kotlinx.datetime.Instant
 @MainNavGraph
 @Destination
 @Composable
-fun SmartReplyScreen() {
+fun SmartReplyScreen(
+    navigator: DestinationsNavigator
+) {
 
     val smartReplyGenerator = remember { SmartReply.getClient() }
 
@@ -120,7 +123,7 @@ fun SmartReplyScreen() {
             screenState = screenState.copy(currentParticipant = it)
         },
         onNavigateBack = {
-
+                         navigator.navigateUp()
         },
         onClearChat = {
             screenState = screenState.copy(

@@ -55,13 +55,17 @@ import com.github.bkmbigo.mlkitsample.ui.screens.text.states.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 @MainNavGraph
 @Destination
 @Composable
-fun LanguageIdentificationScreen(text: String? = null) {
+fun LanguageIdentificationScreen(
+    text: String? = null,
+    navigator: DestinationsNavigator
+) {
     val languageIdentifier = LanguageIdentification.getClient()
 
     var languageIdentificationState by remember {
@@ -75,7 +79,7 @@ fun LanguageIdentificationScreen(text: String? = null) {
             languageIdentificationState =
                 LanguageIdentificationState.IdentifiedLanguage(languageCode)
         },
-        onNavigateBack = {},
+        onNavigateBack = { navigator.navigateUp() },
         onCopyContent = {},
         onShareContent = {},
 
