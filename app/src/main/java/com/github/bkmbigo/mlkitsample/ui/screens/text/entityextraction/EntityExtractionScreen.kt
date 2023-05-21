@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text
+package com.github.bkmbigo.mlkitsample.ui.screens.text.entityextraction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -50,9 +50,7 @@ import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.entityextraction.EntityRecord
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

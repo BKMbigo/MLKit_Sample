@@ -1,7 +1,6 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text.states
+package com.github.bkmbigo.mlkitsample.ui.screens.text.translation
 
 import androidx.compose.ui.text.input.TextFieldValue
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf

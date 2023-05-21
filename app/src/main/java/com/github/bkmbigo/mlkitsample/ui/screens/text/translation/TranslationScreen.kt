@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text
+package com.github.bkmbigo.mlkitsample.ui.screens.text.translation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -53,9 +53,7 @@ import com.github.bkmbigo.mlkitsample.ui.components.TextInputTextField
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.translation.TranslationLanguageHeader
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageOption
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.common.MlKitException

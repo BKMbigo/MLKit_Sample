@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text.states
+package com.github.bkmbigo.mlkitsample.ui.screens.text.entityextraction
 
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView

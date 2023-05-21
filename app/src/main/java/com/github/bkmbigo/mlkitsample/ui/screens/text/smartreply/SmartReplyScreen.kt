@@ -1,4 +1,4 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text
+package com.github.bkmbigo.mlkitsample.ui.screens.text.smartreply
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,9 +56,7 @@ import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.MainNavGraph
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.smartreply.SmartReplyConversationBar
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.SmartReplyConversation
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.SmartReplyParticipant
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.SmartReplyScreenState
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.mlkit.nl.smartreply.SmartReply
 import com.ramcosta.composedestinations.annotation.Destination

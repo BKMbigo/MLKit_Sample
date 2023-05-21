@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.R
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.translation.TranslationScreenState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageOption
 
 @Composable

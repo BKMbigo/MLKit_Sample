@@ -1,9 +1,7 @@
-package com.github.bkmbigo.mlkitsample.ui.screens.text
+package com.github.bkmbigo.mlkitsample.ui.screens.text.entityextraction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityRecordState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.common.model.DownloadConditions

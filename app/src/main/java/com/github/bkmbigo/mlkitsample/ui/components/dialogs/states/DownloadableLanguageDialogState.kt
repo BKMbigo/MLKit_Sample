@@ -2,9 +2,8 @@ package com.github.bkmbigo.mlkitsample.ui.components.dialogs.states
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityExtractionScreenState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.TranslationScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.entityextraction.EntityExtractionScreenState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.translation.TranslationScreenState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import kotlinx.collections.immutable.PersistentList

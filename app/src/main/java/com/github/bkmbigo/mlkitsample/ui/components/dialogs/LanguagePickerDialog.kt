@@ -70,7 +70,6 @@ import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageDialogState
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageState
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import kotlinx.collections.immutable.persistentListOf

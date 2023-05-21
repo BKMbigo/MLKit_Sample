@@ -48,9 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.R
-import com.github.bkmbigo.mlkitsample.ui.screens.text.states.EntityRecordState
+import com.github.bkmbigo.mlkitsample.ui.screens.text.entityextraction.EntityRecordState
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.EntityExtractionLanguage
-import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.LanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import com.google.android.gms.internal.mlkit_entity_extraction.zzahy
 import com.google.mlkit.nl.entityextraction.DateTimeEntity
