@@ -160,7 +160,6 @@ fun <T> LanguagePickerDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
             ) {
                 AnimatedContent(
                     targetState = downloadedLanguages.isNotEmpty(),
