@@ -4,26 +4,37 @@ Welcome to the ML Kit Sample Application! This application is designed to showca
 
 ## ML Kit features
 
+
+
+
+
+
+
 ### Text Features
 #### [Language Identification](https://developers.google.com/ml-kit/language/identification)
 The Language Identification feature enables you to identify the language used in a given text. Leveraging ML Kit's advanced language recognition models, this feature accurately detects over 100 different languages. Whether you're building multilingual apps or analyzing text data, language identification provides valuable insights into understanding and processing textual content.
 
-<video src="https://github.com/BKMbigo/MLKit_Sample/blob/eb16fdb9d9dbd165cd2c1695509c1c4aa48ca71e/resources/laguage_identification.mp4"></video>
+https://github.com/BKMbigo/MLKit_Sample/assets/102836149/37c8777a-f782-4f69-8937-6ca8ee827a21
 
-
-#### [Translation](https://developers.google.com/ml-kit/language/translation) 
+#### [Translation](https://developers.google.com/ml-kit/language/translation)
 The Translation feature allows seamless translation of text from one human language to another. With support for 58 popular human languages, ML Kit empowers Android developers to create applications that break down language barriers and foster cross-cultural communication. Whether you're building a language learning app or enabling global collaboration, the translation feature is an essential tool in your Android development toolkit.
+
+https://github.com/BKMbigo/MLKit_Sample/assets/102836149/791497c9-33b1-447b-9c31-1fc5ff4cd6e9
 
 #### [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply)
 The Smart Reply feature enhances user experience by automatically generating short and contextually relevant replies in a conversation. Powered by machine learning algorithms, this feature suggests appropriate responses based on the input message (Uses up to 10 recent messages to generate appropriate responses). Currently, the Smart Reply feature is available for English conversations, providing users with quick and convenient reply suggestions in their daily communication.
 
+https://github.com/BKMbigo/MLKit_Sample/assets/102836149/f065ff19-fc4c-4663-9ab0-99b477506c7a
+
 #### [Entity Extraction](https://developers.google.com/ml-kit/language/entity-extraction)
 The Entity Extraction feature allows you to extract specific information from a block of text. ML Kit's powerful entity recognition models can identify and extract various types of entities, such as addresses, phone numbers, dates and times, flight numbers, ISBN and IBAN book numbers, monetary amounts, tracking numbers, and payment card details. This feature is particularly useful in Android applications that require parsing and understanding structured data from unstructured text sources.
+
+https://github.com/BKMbigo/MLKit_Sample/assets/102836149/1b6fe79c-520f-4e6c-ba39-2ee2654803bc
 
 ## Libraries Used
 * Jetpack Compose
 * [Google ML Kit](https://developers.google.com/ml-kit)
-
+* 
 ## Future Plans
 * Redesign Translation screen to support history
   * Add support for translating a block of text to multiple languages
