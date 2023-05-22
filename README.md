@@ -8,6 +8,9 @@ Welcome to the ML Kit Sample Application! This application is designed to showca
 #### [Language Identification](https://developers.google.com/ml-kit/language/identification)
 The Language Identification feature enables you to identify the language used in a given text. Leveraging ML Kit's advanced language recognition models, this feature accurately detects over 100 different languages. Whether you're building multilingual apps or analyzing text data, language identification provides valuable insights into understanding and processing textual content.
 
+<video src="https://github.com/BKMbigo/MLKit_Sample/blob/eb16fdb9d9dbd165cd2c1695509c1c4aa48ca71e/resources/laguage_identification.mp4"></video>
+
+
 #### [Translation](https://developers.google.com/ml-kit/language/translation) 
 The Translation feature allows seamless translation of text from one human language to another. With support for 58 popular human languages, ML Kit empowers Android developers to create applications that break down language barriers and foster cross-cultural communication. Whether you're building a language learning app or enabling global collaboration, the translation feature is an essential tool in your Android development toolkit.
 
