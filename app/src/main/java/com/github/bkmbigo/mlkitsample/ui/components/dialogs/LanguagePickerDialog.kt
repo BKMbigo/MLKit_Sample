@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -57,6 +58,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -74,6 +77,7 @@ import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageV
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -166,7 +170,9 @@ fun <T> LanguagePickerDialog(
                     transitionSpec = {
                         slideInHorizontally() with slideOutHorizontally()
                     },
-                    label = ""
+                    label = "",
+                    modifier = Modifier.fillMaxWidth()
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.3f).roundToInt().dp)
                 ) {
                     when (it) {
                         true -> {
@@ -253,7 +259,8 @@ fun <T> LanguagePickerDialog(
 
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.4f).roundToInt().dp),
                     contentPadding = PaddingValues(vertical = 4.dp)
                 ) {
                     items(availableLanguages) { translatableLanguage ->
