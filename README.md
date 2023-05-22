@@ -21,7 +21,7 @@ The Entity Extraction feature allows you to extract specific information from a 
 * Jetpack Compose
 * [Google ML Kit](https://developers.google.com/ml-kit)
 
-## Future PRelans
+## Future Plans
 * Redesign Translation screen to support history
   * Add support for translating a block of text to multiple languages
 * Provide Implementations of actions present in the UI
