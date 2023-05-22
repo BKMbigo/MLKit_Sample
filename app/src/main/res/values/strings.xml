@@ -37,4 +37,5 @@
     <string name="label_clear_chat">Clear Chat</string>
 
     <string name="placeholder_enter_text">Enter text</string>
+    <string name="placeholder_add_translation">Add Translation</string>
 </resources>

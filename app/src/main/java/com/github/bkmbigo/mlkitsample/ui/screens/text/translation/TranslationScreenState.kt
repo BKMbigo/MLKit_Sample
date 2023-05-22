@@ -6,10 +6,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
 data class TranslationScreenState(
-    val originalLanguage: TranslationLanguageView? = null,
-    val targetLanguage: TranslationLanguageView? = null,
-    val originalText: TextFieldValue = TextFieldValue(""),
-    val targetText: TextFieldValue = TextFieldValue(""),
+    val records: List<TranslationRecordState> = emptyList(),
     val downloadedLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
     val downloadingLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),
     val errorLanguages: PersistentList<TranslationLanguageView> = persistentListOf(),

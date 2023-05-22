@@ -1,36 +1,31 @@
 package com.github.bkmbigo.mlkitsample.ui.screens.text.translation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -38,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,10 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.bkmbigo.mlkitsample.MainNavGraph
 import com.github.bkmbigo.mlkitsample.R
-import com.github.bkmbigo.mlkitsample.ui.components.TextInputTextField
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.rememberDownloadableLanguageDialogState
-import com.github.bkmbigo.mlkitsample.ui.components.translation.TranslationLanguageHeader
+import com.github.bkmbigo.mlkitsample.ui.components.translation.TranslationRecord
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageOption
 import com.github.bkmbigo.mlkitsample.ui.screens.text.utils.TranslationLanguageView
 import com.github.bkmbigo.mlkitsample.ui.theme.MLKitSampleTheme
@@ -64,7 +59,6 @@ import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -73,8 +67,6 @@ import kotlinx.coroutines.tasks.await
 @Destination
 @Composable
 fun TranslationScreen(
-    originalLanguage: TranslationLanguageView? = null,
-    text: String? = null,
     navigator: DestinationsNavigator
 ) {
 
@@ -82,12 +74,7 @@ fun TranslationScreen(
     val downloadConditions = remember { DownloadConditions.Builder().requireWifi().build() }
 
     var state by remember {
-        mutableStateOf(
-            TranslationScreenState(
-                originalLanguage = originalLanguage,
-                originalText = TextFieldValue(text?.let { it } ?: "")
-            )
-        )
+        mutableStateOf(TranslationScreenState())
     }
 
     LaunchedEffect(Unit) {
@@ -107,7 +94,7 @@ fun TranslationScreen(
             state = it
         },
         onNavigateUp = {
-           navigator.navigateUp()
+            navigator.navigateUp()
         },
         onTranslateText = { originalLanguage: TranslationLanguageView, targetLanguage: TranslationLanguageView, text: String ->
             val options = TranslatorOptions.Builder()
@@ -118,11 +105,9 @@ fun TranslationScreen(
             val translator = Translation.getClient(options)
             try {
                 val translated = translator.translate(text).await()
-                state = state.copy(
-                    targetText = TextFieldValue(translated)
-                )
+                TranslatedText(targetLanguage, translated)
             } catch (exception: MlKitException) {
-                // TODO
+                null
             }
         },
         onCopyContent = {},
@@ -190,7 +175,7 @@ private fun TranslationScreenContent(
     state: TranslationScreenState,
     onStateChanged: (TranslationScreenState) -> Unit,
     onNavigateUp: () -> Unit = {},
-    onTranslateText: suspend (TranslationLanguageView, TranslationLanguageView, String) -> Unit = { _, _, _ -> },
+    onTranslateText: suspend (TranslationLanguageView, TranslationLanguageView, String) -> TranslatedText?,
     onCopyContent: (String) -> Unit = {},
     onShareContent: (String) -> Unit = {},
     onLanguageDeleted: suspend (TranslationLanguageView) -> Unit = {},
@@ -198,14 +183,22 @@ private fun TranslationScreenContent(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val isOriginalTextBlank by remember(state) {
-        derivedStateOf { state.originalText.text.isBlank() }
-    }
-    val isTranslatedTextBlank by remember(state) {
-        derivedStateOf { state.targetText.text.isBlank() }
+    val dialogState = rememberDownloadableLanguageDialogState(state = state)
+    var showSelectLanguageDialog by remember { mutableStateOf<TranslationLanguageOption?>(null) }
+
+    var originalLanguage by remember { mutableStateOf<TranslationLanguageView?>(null) }
+    var targetLanguage by remember { mutableStateOf<TranslationLanguageView?>(null) }
+    var inputText by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(
+            TextFieldValue("")
+        )
     }
 
-    var showSelectLanguageDialog by remember { mutableStateOf<TranslationLanguageOption?>(null) }
+    val isSendButtonEnabled by remember {
+        derivedStateOf {
+            inputText.text.isNotBlank() && originalLanguage != null && targetLanguage != null
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -249,344 +242,197 @@ private fun TranslationScreenContent(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Column(
+
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f, true),
-                    verticalArrangement = Arrangement.Center
+                        .fillMaxWidth()
+                        .weight(1f, true)
+                        .padding(horizontal = 2.dp),
+                    contentPadding = PaddingValues(vertical = 4.dp),
                 ) {
-
-                    TranslationLanguageHeader(
-                        state = state,
-                        showLanguageSelectionDialog = {
-                            showSelectLanguageDialog = it
-                        },
-                        onReverseLanguages = {
-                            onStateChanged(
-                                state.copy(
-                                    originalLanguage = state.targetLanguage,
-                                    targetLanguage = state.originalLanguage,
-                                    originalText = state.targetText,
-                                    targetText = state.originalText
-                                )
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 45.dp)
-                            .padding(horizontal = 16.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    AnimatedVisibility(
-                        visible = state.originalLanguage != null && state.targetLanguage != null,
-                        enter = expandVertically(expandFrom = Alignment.CenterVertically),
-                        exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically),
-                    ) {
-
-                        Column(
+                    itemsIndexed(state.records) { index, record ->
+                        TranslationRecord(
+                            state = record,
+                            dialogState = dialogState,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f, true),
-                        ) {
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            TextInputTextField(
-                                value = state.originalText,
-                                onValueChange = {
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            onCopyContent = onCopyContent,
+                            onShareContent = onShareContent,
+                            onTranslateText = { originalLang, targetLang, text ->
+                                coroutineScope.launch {
+                                    val translation =
+                                        onTranslateText(originalLang, targetLang, text)
                                     onStateChanged(
-                                        state.copy(
-                                            originalText = it
-                                        )
-                                    )
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(0.8f, true)
-                                    .padding(horizontal = 12.dp),
-                                topActions = {
-                                    Spacer(modifier = Modifier.width(4.dp))
-
-                                    Text(
-                                        text = stringResource(id = R.string.placeholder_enter_text),
-                                        fontWeight = FontWeight.Light,
-                                        modifier = Modifier
-                                            .padding(vertical = 4.dp)
-                                            .padding(start = 4.dp)
-                                    )
-
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f, true)
-                                            .height(ButtonDefaults.MinHeight)
-                                            .padding(vertical = 4.dp)
-                                    )
-
-                                    AnimatedVisibility(
-                                        visible = !isOriginalTextBlank,
-                                        enter = expandVertically() + expandHorizontally(),
-                                        exit = shrinkVertically() + shrinkHorizontally()
-                                    ) {
-                                        IconButton(
-                                            onClick = {
-                                                onStateChanged(
-                                                    state.copy(
-                                                        originalText = TextFieldValue("")
-                                                    )
-                                                )
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Clear,
-                                                contentDescription = null
+                                        state.copy(records = state.records.toMutableList().apply {
+                                            val rec = get(index)
+                                            set(
+                                                index,
+                                                rec.copy(
+                                                    translations = rec.translations.toMutableList()
+                                                        .apply {
+                                                            translation?.let { add(it) }
+                                                        })
                                             )
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.width(4.dp))
-
-                                },
-                                bottomActions = {
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f, true)
-                                            .height(ButtonDefaults.MinHeight)
+                                        })
                                     )
+                                }
+                            },
+                            onLanguageDownloaded = onLanguageDownloaded,
+                            onLanguageDeleted = onLanguageDeleted
+                        )
+                    }
+                }
 
-                                    AnimatedVisibility(
-                                        visible = !isOriginalTextBlank,
-                                        enter = expandVertically() + expandHorizontally(),
-                                        exit = shrinkVertically() + shrinkHorizontally()
-                                    ) {
+                Spacer(modifier = Modifier.height(8.dp))
 
-                                        IconButton(
-                                            onClick = {
-                                                onCopyContent(state.originalText.text)
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.ContentCopy,
-                                                contentDescription = null
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(
+                            onClick = {
+                                showSelectLanguageDialog =
+                                    TranslationLanguageOption.ORIGINAL_LANGUAGE
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    id = originalLanguage?.languageView?.string
+                                        ?: R.string.label_select_language
+                                )
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        IconButton(
+                            onClick = {
+                                val lang = originalLanguage
+                                originalLanguage = targetLanguage
+                                targetLanguage = lang
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SwapHoriz,
+                                contentDescription = null
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        TextButton(
+                            onClick = {
+                                showSelectLanguageDialog = TranslationLanguageOption.TARGET_LANGUAGE
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(
+                                    id = targetLanguage?.languageView?.string
+                                        ?: R.string.label_select_language
+                                )
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp)
+                            .padding(bottom = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        OutlinedTextField(
+                            value = inputText,
+                            onValueChange = {
+                                inputText = it
+                            },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.placeholder_enter_text)
+                                )
+                            },
+                            modifier = Modifier.weight(1f, true)
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    originalLanguage?.let { origLang ->
+                                        targetLanguage?.let { targetLang ->
+                                            val translation = onTranslateText(
+                                                origLang,
+                                                targetLang,
+                                                inputText.text
                                             )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = !isOriginalTextBlank,
-                                        enter = expandVertically() + expandHorizontally(),
-                                        exit = shrinkVertically() + shrinkHorizontally()
-                                    ) {
-                                        IconButton(
-                                            onClick = {
-                                                onShareContent(state.originalText.text)
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Share,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = !isOriginalTextBlank,
-                                        enter = slideInHorizontally { it / 8 },
-                                        exit = slideOutHorizontally { it / 8 }
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                coroutineScope.launch {
-                                                    if (state.originalLanguage != null && state.targetLanguage != null) {
-                                                        onTranslateText(
-                                                            state.originalLanguage,
-                                                            state.targetLanguage,
-                                                            state.originalText.text
+                                            onStateChanged(
+                                                state.copy(
+                                                    records = state.records.toMutableList().apply {
+                                                        add(
+                                                            TranslationRecordState(
+                                                                originalText = inputText.text,
+                                                                originalLanguage = origLang,
+                                                                translations = translation?.let {
+                                                                    listOf(it)
+                                                                } ?: emptyList()
+                                                            )
                                                         )
                                                     }
-                                                }
-                                            }
-                                        ) {
-                                            Text(
-                                                text = "Translate",
-                                            )
-                                        }
-                                    }
-
-                                    Spacer(
-                                        modifier = Modifier
-                                            .width(4.dp)
-                                    )
-                                }
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            TextInputTextField(
-                                value = state.targetText,
-                                onValueChange = {
-                                    onStateChanged(
-                                        state.copy(targetText = it)
-                                    )
-                                },
-                                readOnly = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(0.8f, true)
-                                    .padding(horizontal = 12.dp),
-                                topActions = {
-                                    Spacer(modifier = Modifier.width(4.dp))
-
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f, true)
-                                            .height(ButtonDefaults.MinHeight)
-                                            .padding(vertical = 4.dp)
-                                    )
-
-                                    AnimatedVisibility(
-                                        visible = !isTranslatedTextBlank,
-                                        enter = slideInHorizontally { it / 2 },
-                                        exit = slideOutHorizontally { it / 2 }
-                                    ) {
-                                        IconButton(
-                                            onClick = {
-                                                onStateChanged(
-                                                    state.copy(targetText = TextFieldValue(""))
                                                 )
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Clear,
-                                                contentDescription = null
                                             )
+                                            inputText = TextFieldValue("")
                                         }
                                     }
-
-                                    Spacer(modifier = Modifier.width(4.dp))
-
-                                },
-                                bottomActions = {
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f, true)
-                                            .height(ButtonDefaults.MinHeight)
-                                    )
-
-                                    AnimatedVisibility(
-                                        visible = !isTranslatedTextBlank,
-                                        enter = slideInHorizontally { it / 2 },
-                                        exit = slideOutHorizontally { it / 2 }
-                                    ) {
-
-                                        IconButton(
-                                            onClick = {
-                                                onCopyContent(state.targetText.text)
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.ContentCopy,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    }
-
-                                    AnimatedVisibility(
-                                        visible = !isTranslatedTextBlank,
-                                        enter = slideInHorizontally { it / 4 },
-                                        exit = slideOutHorizontally { it / 4 }
-                                    ) {
-                                        IconButton(
-                                            onClick = {
-                                                onShareContent(state.targetText.text)
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Share,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    }
-
-                                    Spacer(
-                                        modifier = Modifier
-                                            .width(4.dp)
-                                    )
                                 }
+                            },
+                            enabled = isSendButtonEnabled
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Send,
+                                contentDescription = null
                             )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
                         }
                     }
                 }
             }
-
-            AnimatedVisibility(
-                visible = showSelectLanguageDialog != null,
-                enter = expandVertically(expandFrom = Alignment.CenterVertically),
-                exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
-            ) {
-                LanguagePickerDialog(
-                    state = rememberDownloadableLanguageDialogState(
-                        state = state
-                    ),
-                    heading = {
-                        Text(
-                            text = stringResource(
-                                id = when (showSelectLanguageDialog) {
-                                    TranslationLanguageOption.ORIGINAL_LANGUAGE -> R.string.label_select_original_language
-                                    else -> R.string.label_select_target_language
-                                }
-                            ),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                    },
-                    onDismissDialog = {
-                        showSelectLanguageDialog = null
-                        onStateChanged(
-                            state.copy(
-                                downloadingLanguages = persistentListOf(),
-                                deletingLanguages = persistentListOf()
-                            )
-                        )
-                    },
-                    onLanguageChosen = {
-                        when (showSelectLanguageDialog) {
-                            TranslationLanguageOption.ORIGINAL_LANGUAGE -> {
-                                onStateChanged(
-                                    state.copy(
-                                        originalLanguage = it,
-                                        downloadingLanguages = persistentListOf(),
-                                        deletingLanguages = persistentListOf()
-                                    )
-                                )
-
-                            }
-
-                            TranslationLanguageOption.TARGET_LANGUAGE -> {
-                                onStateChanged(
-                                    state.copy(
-                                        targetLanguage = it,
-                                        downloadingLanguages = persistentListOf(),
-                                        deletingLanguages = persistentListOf()
-                                    )
-                                )
-                            }
-
-                            null -> {}
-                        }
-                        showSelectLanguageDialog = null
-                    },
-                    onLanguageDeleted = onLanguageDeleted,
-                    onLanguageDownloaded = onLanguageDownloaded,
-                )
-            }
         }
+    }
 
+    if(showSelectLanguageDialog != null) {
+        LanguagePickerDialog(
+            state = dialogState,
+            heading = {
+                Text(
+                    text = when(showSelectLanguageDialog) {
+                        TranslationLanguageOption.ORIGINAL_LANGUAGE -> stringResource(id = R.string.label_select_original_language)
+                        TranslationLanguageOption.TARGET_LANGUAGE -> stringResource(id = R.string.label_select_target_language)
+                        null -> ""
+                    },
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            onDismissDialog = { showSelectLanguageDialog = null },
+            onLanguageChosen = {
+                when(showSelectLanguageDialog) {
+                    TranslationLanguageOption.ORIGINAL_LANGUAGE -> { originalLanguage = it }
+                    TranslationLanguageOption.TARGET_LANGUAGE -> { targetLanguage = it }
+                    null -> {}
+                }
+                showSelectLanguageDialog = null
+            },
+            onLanguageDeleted = onLanguageDeleted,
+            onLanguageDownloaded = onLanguageDownloaded,
+            
+        )
     }
 
 }
@@ -601,6 +447,9 @@ private fun PreviewTranslationScreen() {
             state = state,
             onStateChanged = {
                 state = it
+            },
+            onTranslateText = { orig, target, text ->
+                TranslatedText(target, "Translated Text")
             }
         )
     }

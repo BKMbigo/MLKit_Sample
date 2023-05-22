@@ -4,12 +4,6 @@ Welcome to the ML Kit Sample Application! This application is designed to showca
 
 ## ML Kit features
 
-
-
-
-
-
-
 ### Text Features
 #### [Language Identification](https://developers.google.com/ml-kit/language/identification)
 The Language Identification feature enables you to identify the language used in a given text. Leveraging ML Kit's advanced language recognition models, this feature accurately detects over 100 different languages. Whether you're building multilingual apps or analyzing text data, language identification provides valuable insights into understanding and processing textual content.
@@ -34,10 +28,8 @@ https://github.com/BKMbigo/MLKit_Sample/assets/102836149/1b6fe79c-520f-4e6c-ba39
 ## Libraries Used
 * Jetpack Compose
 * [Google ML Kit](https://developers.google.com/ml-kit)
-* 
+
 ## Future Plans
-* Redesign Translation screen to support history
-  * Add support for translating a block of text to multiple languages
 * Provide Implementations of actions present in the UI
   * Copy Content
   * Share Content
