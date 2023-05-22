@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.github.bkmbigo.mlkitsample.R
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.LanguagePickerDialog
 import com.github.bkmbigo.mlkitsample.ui.components.dialogs.states.DownloadableLanguageDialogState
@@ -55,7 +54,7 @@ fun TranslationRecord(
     modifier: Modifier = Modifier,
     onCopyContent: (String) -> Unit = {},
     onShareContent: (String) -> Unit = {},
-    onTranslateText: suspend (TranslationLanguageView, TranslationLanguageView, String) -> Unit = {_,_,_ -> },
+    onTranslateText: suspend (TranslationLanguageView, TranslationLanguageView, String) -> Unit = { _, _, _ -> },
     onLanguageDownloaded: suspend (TranslationLanguageView) -> Unit = {},
     onLanguageDeleted: suspend (TranslationLanguageView) -> Unit = {}
 ) {
