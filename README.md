@@ -13,7 +13,7 @@ https://github.com/BKMbigo/MLKit_Sample/assets/102836149/37c8777a-f782-4f69-8937
 #### [Translation](https://developers.google.com/ml-kit/language/translation)
 The Translation feature allows seamless translation of text from one human language to another. With support for 58 popular human languages, ML Kit empowers Android developers to create applications that break down language barriers and foster cross-cultural communication. Whether you're building a language learning app or enabling global collaboration, the translation feature is an essential tool in your Android development toolkit.
 
-https://github.com/BKMbigo/MLKit_Sample/assets/102836149/791497c9-33b1-447b-9c31-1fc5ff4cd6e9
+https://github.com/BKMbigo/MLKit_Sample/assets/102836149/d075011f-38f0-4ec4-931e-0007497858ed
 
 #### [Smart Reply](https://developers.google.com/ml-kit/language/smart-reply)
 The Smart Reply feature enhances user experience by automatically generating short and contextually relevant replies in a conversation. Powered by machine learning algorithms, this feature suggests appropriate responses based on the input message (Uses up to 10 recent messages to generate appropriate responses). Currently, the Smart Reply feature is available for English conversations, providing users with quick and convenient reply suggestions in their daily communication.
